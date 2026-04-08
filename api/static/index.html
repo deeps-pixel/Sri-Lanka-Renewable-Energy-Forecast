@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lanka Renewable Energy Forecast</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-background">
+    <div class="background-overlay"></div>
+
+    <div class="app-container">
+        
+        <!-- Header Section -->
+        <header class="main-header">
+            <h1 class="logo-text">Sri Lanka Renewable Energy Forecast</h1>
+            <p class="intro-description">
+                This dashboard predicts national renewable energy generation (Solar, Wind, and Hydro) for the Sri Lankan grid. Using live weather forecasts and a LightGBM model, it provides an estimate with 80% confidence intervals.
+            </p>
+            
+            <div class="controls">
+                <div class="date-picker-wrapper">
+                    <label for="forecast-date">Target Date</label>
+                    <input type="date" id="forecast-date" class="modern-input theme-cal" />
+                    <button id="fetch-btn" class="glass-btn">Generate Forecast</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hidden results container -->
+        <div id="results-container" class="results-container hidden-state">
+
+            <!-- Primary Highlight: Generation Forecast -->
+            <section class="hero-forecast glass-panel smooth-pop delay-1">
+                <div class="hero-kpi-content">
+                    <h4>Best Estimated Total Generation</h4>
+                    <h2 id="kpi-peak-mw">-- MW</h2>
+                    <p id="kpi-bounds" class="bounds-text">Lower Bound: -- MW &nbsp;&bull;&nbsp; Upper Bound: -- MW</p>
+                </div>
+                
+                <div class="chart-container" style="margin-top: 1.5rem;">
+                    <div class="chart-canvas-wrapper hero-chart-wrapper">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weather Section: KPIs Left, Chart Right -->
+            <section class="weather-grid smooth-pop delay-2">
+                <div class="weather-kpis-left">
+                    <div class="cute-card">
+                        <div class="kpi-icon icon-sun">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <h4>Mean Irradiance</h4>
+                            <h2 id="kpi-solar">-- W/m²</h2>
+                        </div>
+                    </div>
+                    <div class="cute-card">
+                        <div class="kpi-icon icon-temp">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <h4>Peak Heat Index</h4>
+                            <h2 id="kpi-temp">-- °C</h2>
+                        </div>
+                    </div>
+                    <div class="cute-card">
+                        <div class="kpi-icon icon-rain">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M16 14v6"></path><path d="M8 14v6"></path><path d="M12 16v6"></path></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <h4>Aggregate Rain</h4>
+                            <h2 id="kpi-rain">-- mm</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel chart-container">
+                    <div class="chart-header">
+                        <h3>Meteorological Trends</h3>
+                        <p>Live localized weather variables</p>
+                    </div>
+                    <div class="chart-canvas-wrapper weather-chart-wrapper">
+                        <canvas id="weatherChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="glass-panel footer-disclaimer smooth-pop delay-3">
+                <div class="footer-content">
+                    <h4>⚠️ Disclaimer</h4>
+                    <p>
+                        Weather patterns are highly localized. This dashboard fetches real-time meteorological forecasts for central coordinates in Sri Lanka (Colombo region) to fuel the national generation model. Actual regional distributions of rainfall and solar variance might differ significantly.
+                    </p>
+                </div>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <!-- Spinner Overlay -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Generating Forecast...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
