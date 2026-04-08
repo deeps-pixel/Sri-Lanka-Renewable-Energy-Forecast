@@ -83,7 +83,6 @@ Temperature and rainfall being most important confirms that Sri Lanka's renewabl
 An interactive web interface is available for visualizing real-time forecasts and weather trends. It provides a visual representation of the best estimates and 80% confidence intervals.
 
 - **Live Demo**: [Sri Lanka Energy Forecast Dashboard](https://huggingface.co/spaces/deeps-pixel/sri-lanka-energy-forecast) 🚀
-- **Sample Data**: A `data/sample_dataset.csv` is included to demonstrate the data schema.
 
 ## Quick Start
 
