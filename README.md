@@ -1,3 +1,27 @@
+---
+title: Sri Lanka Renewable Energy Forecast
+emoji: ⚡
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
+# Renewable Energy Forecast for Sri Lanka
+
+A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid with 80% confidence intervals.
+
+## Background
+
+Sri Lanka's electricity grid operator (CEB) needs to know how much renewable energy will be produced tomorrow. This is difficult because solar, wind, and hydro depend on weather. This project provides a data-driven solution.
+
+## What It Does
+
+| Input | Output |
+|-------|--------|
+| Weather forecast (temperature, solar radiation, wind, rain, humidity) | Best estimate of renewable generation (MW) |
+| Time of day, day of week, month | 80% confidence interval |
+
 ## How Accurate Is It?
 
 Tested on 2024 data (not seen during training):
@@ -54,7 +78,8 @@ Linear models cannot capture these patterns. Tree-based models can.
 | Solar radiation | Lower than expected |
 
 Temperature and rainfall being most important confirms that Sri Lanka's renewable generation is dominated by hydro (which depends on rain) and that temperature affects overall energy patterns.
-## Data Pipeline
+
+## Data Pipeline
 
 - **Source**: 1,500+ Excel files from CEB (2021-2024)
 - **Resolution**: 15-minute intervals
