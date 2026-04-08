@@ -35,7 +35,9 @@ ENV/
 
 # Project specific
 data/
+!data/sample_dataset.csv
 models/
+!models/renewable_model.pkl
 plots/
 reports/*.png
 reports/*.pdf
