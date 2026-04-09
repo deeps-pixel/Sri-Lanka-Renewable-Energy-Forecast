@@ -6,7 +6,6 @@ colorTo: indigo
 sdk: docker
 pinned: false
 ---
-
 # Renewable Energy Forecast for Sri Lanka
 
 A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid using **LightGBM Quantile Regression** to provide weather-aware 80% confidence intervals.
