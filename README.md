@@ -2,7 +2,7 @@
 title: Sri Lanka Energy Forecast
 emoji: ⚡
 colorFrom: blue
-colorTo: teal
+colorTo: indigo
 sdk: docker
 pinned: false
 ---
