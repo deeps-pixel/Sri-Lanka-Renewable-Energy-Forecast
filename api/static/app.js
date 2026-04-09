@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // KPI Elements
     const kpiPeak = document.getElementById('kpi-peak-mw');
-    const kpiBounds = document.getElementById('kpi-bounds');
+    const kpiLower = document.getElementById('kpi-lower');
+    const kpiUpper = document.getElementById('kpi-upper');
     const kpiSolar = document.getElementById('kpi-solar');
     const kpiTemp = document.getElementById('kpi-temp');
     const kpiRain = document.getElementById('kpi-rain');
@@ -37,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Defaults for Glass Charts
     Chart.defaults.color = '#c5d4df';
-    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.family = "'Outfit', sans-serif";
+    Chart.defaults.font.size = 13;
 
     // Action: ONLY load when user clicks
     fetchBtn.addEventListener('click', () => {
@@ -84,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalRain = weather.precipitation.reduce((a,b)=>a+b, 0).toFixed(1);
 
         kpiPeak.innerText = `${maxMW.toFixed(0)} MW`;
-        kpiBounds.innerText = `Lower Bound: ${peakLower.toFixed(0)} MW      Upper Bound: ${peakUpper.toFixed(0)} MW`;
+        kpiLower.innerText = `${peakLower.toFixed(0)} MW`;
+        kpiUpper.innerText = `${peakUpper.toFixed(0)} MW`;
         kpiSolar.innerText = `${avgSolar} W/m²`;
         kpiTemp.innerText = `${maxTemp} °C`;
         kpiRain.innerText = `${totalRain} mm`;
@@ -122,20 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         pointHoverRadius: 8
                     },
                     {
-                        label: 'Upper Variance (80%)',
+                        label: 'Upper Bound (Quantile 90%)',
                         data: upper,
-                        borderColor: 'rgba(255,255,255,0.15)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1.5,
+                        borderDash: [8, 4],
                         fill: false,
                         pointRadius: 0
                     },
                     {
-                        label: 'Lower Variance (80%)',
+                        label: 'Lower Bound (Quantile 10%)',
                         data: lower,
-                        borderColor: 'rgba(255,255,255,0.15)',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1.5,
+                        borderDash: [8, 4],
                         fill: false,
                         pointRadius: 0
                     }

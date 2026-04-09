@@ -21,7 +21,7 @@
         <header class="main-header">
             <h1 class="logo-text">Sri Lanka Renewable Energy Forecast</h1>
             <p class="intro-description">
-                This dashboard predicts national renewable energy generation (Solar, Wind, and Hydro) for the Sri Lankan grid. Using live weather forecasts and a LightGBM model, it provides an estimate with 80% confidence intervals.
+                This dashboard predicts national renewable energy generation (Solar, Wind, and Hydro) for the Sri Lankan grid. Using live weather forecasts and a LightGBM quantile regression model, it provides an estimate with 80% confidence intervals.
             </p>
             
             <div class="controls">
@@ -41,7 +41,19 @@
                 <div class="hero-kpi-content">
                     <h4>Best Estimated Total Generation</h4>
                     <h2 id="kpi-peak-mw">-- MW</h2>
-                    <p id="kpi-bounds" class="bounds-text">Lower Bound: -- MW &nbsp;&bull;&nbsp; Upper Bound: -- MW</p>
+                    <div class="range-summary-line">80% Confidence Range:</div>
+                    
+                    <div class="bounds-display-wrapper">
+                        <div class="bound-card">
+                            <span class="bound-tag tag-lower">Q10</span>
+                            <h3 id="kpi-lower">-- MW</h3>
+                        </div>
+                        <div class="bound-divider"></div>
+                        <div class="bound-card">
+                            <span class="bound-tag tag-upper">Q90</span>
+                            <h3 id="kpi-upper">-- MW</h3>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="chart-container" style="margin-top: 1.5rem;">

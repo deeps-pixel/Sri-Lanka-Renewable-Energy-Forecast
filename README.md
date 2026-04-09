@@ -1,6 +1,6 @@
 # Renewable Energy Forecast for Sri Lanka
 
-A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid with 80% confidence intervals.
+A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid using **LightGBM Quantile Regression** to provide weather-aware 80% confidence intervals.
 
 ## Background
 
@@ -11,7 +11,7 @@ Sri Lanka's electricity grid operator (CEB) needs to know how much renewable ene
 | Input | Output |
 |-------|--------|
 | Weather forecast (temperature, solar radiation, wind, rain, humidity) | Best estimate of renewable generation (MW) |
-| Time of day, day of week, month | 80% confidence interval |
+| Time of day, day of week, month | Dynamic 80% Confidence Range (Q10 - Q90) |
 
 ## How Accurate Is It?
 
@@ -25,14 +25,15 @@ Tested on 2024 data (not seen during training):
 
 For a typical renewable output of 700 MW, the error is about 220 MW. This is the reality of weather-dependent forecasting.
 
-## Prediction Intervals
+## Probabilistic Forecasting (Quantile Regression)
 
-The model provides 80% confidence intervals based on historical error distribution:
+Unlike standard regression which predicts a single value, this system uses **Quantile Regression** to account for weather-dependent uncertainty. The backend utilizes three distinct LightGBM models:
 
-- Lower bound: prediction - 231 MW
-- Upper bound: prediction + 448 MW
+- **Q10 Model**: Predicts the 10th percentile (Lower Bound).
+- **Q50 Model**: Predicts the 50th percentile (Median / Best Estimate).
+- **Q90 Model**: Predicts the 90th percentile (Upper Bound).
 
-Example: If the model predicts 650 MW, you can be 80% confident actual generation will be between 419 MW and 1,098 MW.
+This approach allows the confidence interval to expand or contract dynamically based on the specific weather conditions for each hour, rather than relying on a fixed historical offset.
 
 ## Model Selection
 
@@ -97,11 +98,9 @@ python scripts/predict.py --temp 32 --solar 500 --wind 4 --rain 0 --humidity 65
 python -m uvicorn api.main:app --port 8000
 ```
 
-**Example Output (CLI):**
-```
-Best estimate: 294 MW
-80% confidence interval: 63 - 741 MW
-```
+**Example Output (Interactive Dashboard):**
+- **Best Estimate**: 1,350 MW
+- **80% Confidence Range**: 1,000 – 1,700 MW
 
 ## Project Structure
 
