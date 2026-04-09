@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kpiSolar = document.getElementById('kpi-solar');
     const kpiTemp = document.getElementById('kpi-temp');
     const kpiRain = document.getElementById('kpi-rain');
+    const kpiEnergy = document.getElementById('kpi-energy-gwh');
 
     // Chart.js instances
     let forecastChart = null;
@@ -85,7 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxTemp = Math.max(...weather.temperature).toFixed(1);
         const totalRain = weather.precipitation.reduce((a,b)=>a+b, 0).toFixed(1);
 
+        const totalEnergyGWh = (forecast.reduce((a, b) => a + b, 0) / 1000).toFixed(2);
+
         kpiPeak.innerText = `${maxMW.toFixed(0)} MW`;
+        kpiEnergy.innerText = `${totalEnergyGWh} GWh`;
         kpiLower.innerText = `${peakLower.toFixed(0)} MW`;
         kpiUpper.innerText = `${peakUpper.toFixed(0)} MW`;
         kpiSolar.innerText = `${avgSolar} W/m²`;

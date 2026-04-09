@@ -193,6 +193,40 @@ body.theme-background {
     animation: kpiPulse 4s ease-in-out infinite;
 }
 
+@keyframes kpiPulse {
+    0%, 100% { text-shadow: 0 0 25px rgba(30, 226, 160, 0.5); transform: scale(1); }
+    50% { text-shadow: 0 0 45px rgba(30, 226, 160, 0.8); transform: scale(1.02); }
+}
+
+.energy-yield-container {
+    margin: -0.5rem 0 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(45, 196, 234, 0.1);
+    padding: 0.8rem 2rem;
+    border-radius: 18px;
+    border: 1px solid rgba(45, 196, 234, 0.2);
+    box-shadow: inset 0 0 15px rgba(45, 196, 234, 0.1);
+}
+
+.energy-label {
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    opacity: 0.9;
+}
+
+.energy-yield-container h3 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: #fff;
+    font-weight: 700;
+}
+
 .range-summary-line {
     font-size: 1.1rem;
     color: var(--text-secondary);
@@ -200,11 +234,6 @@ body.theme-background {
     margin-bottom: 1.5rem;
     letter-spacing: 0.5px;
     opacity: 0.9;
-}
-
-@keyframes kpiPulse {
-    0%, 100% { text-shadow: 0 0 25px rgba(30, 226, 160, 0.5); transform: scale(1); }
-    50% { text-shadow: 0 0 45px rgba(30, 226, 160, 0.8); transform: scale(1.02); }
 }
 
 .bounds-display-wrapper {

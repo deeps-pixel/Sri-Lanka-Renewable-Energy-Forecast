@@ -19,8 +19,9 @@ Sri Lanka's electricity grid operator (CEB) needs to know how much renewable ene
 
 | Input | Output |
 |-------|--------|
-| Weather forecast (temperature, solar radiation, wind, rain, humidity) | Best estimate of renewable generation (MW) |
-| Time of day, day of week, month | Dynamic 80% Confidence Range (Q10 - Q90) |
+| Weather forecast (temperature, solar radiation, wind, rain, humidity) | Estimated **Peak Power Projection** (MW) |
+| Time of day, day of week, month | Projected **Daily Energy Yield** (GWh) |
+| Statistical Uncertainty | Dynamic 80% Confidence Range (Q10 - Q90) |
 
 ## How Accurate Is It?
 
@@ -108,8 +109,9 @@ python -m uvicorn api.main:app --port 8000
 ```
 
 **Example Output (Interactive Dashboard):**
-- **Best Estimate**: 1,350 MW
-- **80% Confidence Range**: 1,000 – 1,700 MW
+- **Peak Power Projection**: 1,350 MW
+- **Daily Energy Yield**: 18.42 GWh
+- **80% Confidence Range**: 1,000 – 1,700 MW (at peak)
 
 ## Project Structure
 
