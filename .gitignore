@@ -35,7 +35,8 @@ ENV/
 
 # Project specific
 data/
-models/
+models/*
+!models/*.pkl
 plots/
 reports/*.png
 reports/*.pdf
