@@ -128,11 +128,17 @@ This allows the confidence interval to expand or contract dynamically based on s
 sri-lanka-renewable-forecast/
 ├── api/
 │   ├── main.py              # FastAPI Backend
-│   └── static/              # "Liquid Glass" Dashboard (HTML/CSS/JS)
+│   └── static/              # Dashboard (HTML/CSS/JS)
+├── data/
+│   └── features_dataset.csv  # Feature data
 ├── models/
 │   ├── renewable_model_q10.pkl  # Lower Bound
 │   ├── renewable_model_q50.pkl  # Best Estimate
 │   └── renewable_model_q90.pkl  # Upper Bound
+├── notebooks/
+│   └── renewable_forecast.ipynb # Full training pipeline
+├── reports/
+│   └── feature_importance.png   # Analysis plots
 ├── scripts/
 │   └── predict.py           # CLI Tool
 ├── Dockerfile               # HF Deployment Config
