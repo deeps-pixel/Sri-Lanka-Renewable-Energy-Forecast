@@ -110,7 +110,7 @@ python -m uvicorn api.main:app --port 8000
 **Example Output (Interactive Dashboard):**
 - **Peak Power Projection**: 1,350 MW
 - **Daily Energy Yield**: 18.42 GWh
-- **80% Confidence Range**: 1,000 – 1,700 MW (at peak)
+- **80% Confidence Range (Peak Hour)**: 1,000 – 1,700 MW
 
 ## Project Structure
 
