@@ -103,31 +103,41 @@ pip install -r requirements.txt
 # Run CLI prediction
 python scripts/predict.py --temp 32 --solar 500 --wind 4 --rain 0 --humidity 65
 
-# Start Interactive Dashboard
+# Start Local Dashboard
 python -m uvicorn api.main:app --port 8000
 ```
 
-**Example Output (Interactive Dashboard):**
-- **Peak Power Projection**: 1,350 MW
-- **Daily Energy Yield**: 18.42 GWh
+**Example Output:**
+- **Estimated Peak Power Projection**: 1,350 MW
+- **Projected Daily Energy Yield**: 18.42 GWh
 - **80% Confidence Range (Peak Hour)**: 1,000 – 1,700 MW
+
+## Technical Architecture
+
+### Probabilistic Forecasting (Quantile Regression)
+Unlike standard regression which predicts a single value, this system uses **Quantile Regression** to account for weather-dependent uncertainty. The backend utilizes three distinct LightGBM models:
+- **Q10 Model**: Predicts the 10th percentile (Safe Minimum).
+- **Q50 Model**: Predicts the 50th percentile (Best Estimate).
+- **Q90 Model**: Predicts the 90th percentile (Maximum Potential).
+
+This allows the confidence interval to expand or contract dynamically based on specific weather conditions (e.g., higher uncertainty during monsoon periods).
 
 ## Project Structure
 
 ```
 sri-lanka-renewable-forecast/
-├── notebooks/
-│   └── renewable_forecast.ipynb   # Full training pipeline
-├── scripts/
-│   └── predict.py                  # Command-line prediction
+├── api/
+│   ├── main.py              # FastAPI Backend
+│   └── static/              # "Liquid Glass" Dashboard (HTML/CSS/JS)
 ├── models/
-│   └── renewable_model.pkl         # Trained LightGBM model
-├── data/
-│   └── features_dataset.csv        # Feature data
-├── reports/
-│   └── feature_importance.png      # Feature importance plot
-├── requirements.txt
-└── README.md
+│   ├── renewable_model_q10.pkl  # Lower Bound
+│   ├── renewable_model_q50.pkl  # Best Estimate
+│   └── renewable_model_q90.pkl  # Upper Bound
+├── scripts/
+│   └── predict.py           # CLI Tool
+├── Dockerfile               # HF Deployment Config
+├── requirements.txt         # Dependencies
+└── README.md                # Documentation & Meta
 ```
 
 ## Requirements
