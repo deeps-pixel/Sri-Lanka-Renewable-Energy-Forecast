@@ -372,9 +372,47 @@ body.theme-background {
     border-left: 6px solid var(--warning-amber); padding: 2rem 2.5rem;
 }
 .footer-content h4 {
-    color: var(--warning-amber); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem; font-family: var(--font-heading);
+    color: var(--warning-amber); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.3rem; font-family: var(--font-heading);
 }
-.footer-content p { color: var(--text-secondary); line-height: 1.8; font-size: 1.05rem; }
+
+.disclaimer-table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.modern-table th, .modern-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.modern-table th {
+    background: rgba(252, 163, 17, 0.15);
+    color: var(--warning-amber);
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+}
+
+.modern-table tr:last-child td {
+    border-bottom: none;
+}
+
+.modern-table strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
 
 /* Loading Overlay */
 #loading-overlay {

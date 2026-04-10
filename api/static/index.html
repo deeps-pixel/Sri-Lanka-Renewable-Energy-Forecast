@@ -44,7 +44,7 @@
                         <h4>Estimated Peak Power Projection</h4>
                         <h2 id="kpi-peak-mw">-- MW</h2>
                         
-                        <div class="range-summary-line">80% Confidence Range (Peak Hour):</div>
+                        <div class="range-summary-line">80% Conformal Prediction Interval (Peak Hour):</div>
                         
                         <div class="bounds-display-wrapper">
                             <div class="bound-card">
@@ -64,7 +64,7 @@
                     <!-- Right: Energy Side -->
                     <div class="kpi-column energy-side">
                         <div class="energy-yield-container">
-                            <span class="energy-label">Projected Daily Energy Yield</span>
+                            <span class="energy-label">Projected Daily Renewable Energy Yield</span>
                             <h3 id="kpi-energy-gwh">-- GWh</h3>
                             <p class="energy-subtext">Total generated capacity over 24h</p>
                         </div>
@@ -108,11 +108,20 @@
                             <h2 id="kpi-rain">-- mm</h2>
                         </div>
                     </div>
+                    <div class="cute-card">
+                        <div class="kpi-icon icon-monsoon">
+                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path><path d="m11 13-3 3"></path><path d="m16 13-3 3"></path><path d="m13 18-3 3"></path></svg>
+                        </div>
+                        <div class="kpi-data">
+                            <h4>Climate Season</h4>
+                            <h2 id="kpi-season" style="font-size: 1.1rem; line-height: 1.2;">--</h2>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-panel chart-container">
                     <div class="chart-header">
-                        <h3>Meteorological Trends</h3>
+                        <h3>Meteorological Trends on <span id="trend-date">--/--/----</span></h3>
                         <p>Live localized weather variables</p>
                     </div>
                     <div class="chart-canvas-wrapper weather-chart-wrapper">
@@ -125,8 +134,8 @@
             <footer class="glass-panel footer-disclaimer smooth-pop delay-3">
                 <div class="footer-content">
                     <h4>⚠️ Disclaimer</h4>
-                    <p>
-                        Weather patterns are highly localized. This dashboard fetches real-time meteorological forecasts for central coordinates in Sri Lanka (Colombo region) to fuel the national generation model. Actual regional distributions of rainfall and solar variance might differ significantly.
+                    <p class="disclaimer-text">
+                        This dashboard forecasts renewable energy generation (solar + wind + major hydro) using weather data from the Colombo region. Actual generation across Sri Lanka may vary due to localized weather patterns. The model is for academic and portfolio demonstration purposes only and is not intended for operational decision-making.
                     </p>
                 </div>
             </footer>

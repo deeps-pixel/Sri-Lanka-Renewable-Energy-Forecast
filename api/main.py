@@ -12,7 +12,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(project_root)
 os.chdir(project_root)
 
-from scripts.predict import predict
+from scripts.predict import predict, get_season_name
 
 app = FastAPI(title="Renewable Forecast API")
 
@@ -92,6 +92,7 @@ def get_forecast(date: str):
 
     return {
         "date": date,
+        "season": get_season_name(target_date.month),
         "hours": hours_list,
         "forecast": forecasts,
         "lower": lowers,

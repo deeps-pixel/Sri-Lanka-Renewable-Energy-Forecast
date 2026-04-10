@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const kpiTemp = document.getElementById('kpi-temp');
     const kpiRain = document.getElementById('kpi-rain');
     const kpiEnergy = document.getElementById('kpi-energy-gwh');
+    const kpiSeason = document.getElementById('kpi-season');
 
     // Chart.js instances
     let forecastChart = null;
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         kpiSolar.innerText = `${avgSolar} W/m²`;
         kpiTemp.innerText = `${maxTemp} °C`;
         kpiRain.innerText = `${totalRain} mm`;
+        kpiSeason.innerText = data.season || "--";
 
         // 2. Render Forecast Chart
         renderForecastChart(hours, forecast, lower, upper);
@@ -156,18 +158,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = document.getElementById('weatherChart').getContext('2d');
         if (weatherChart) weatherChart.destroy();
 
-        // Liquid glass backdrop gradients for the weather chart
-        const gradTemp = ctx.createLinearGradient(0, 0, 0, 350);
-        gradTemp.addColorStop(0, 'rgba(239, 71, 111, 0.4)');
-        gradTemp.addColorStop(1, 'rgba(239, 71, 111, 0.0)');
+        // Update the dynamic heading date
+        const dateInput = document.getElementById('forecast-date');
+        const trendDateSpan = document.getElementById('trend-date');
+        if (dateInput && trendDateSpan) {
+            const [y, m, d] = dateInput.value.split('-');
+            trendDateSpan.innerText = `${d}/${m}/${y}`;
+        }
 
-        const gradSolar = ctx.createLinearGradient(0, 0, 0, 350);
-        gradSolar.addColorStop(0, 'rgba(255, 209, 102, 0.4)');
-        gradSolar.addColorStop(1, 'rgba(255, 209, 102, 0.0)');
-        
-        const gradWind = ctx.createLinearGradient(0, 0, 0, 350);
-        gradWind.addColorStop(0, 'rgba(76, 201, 240, 0.3)');
-        gradWind.addColorStop(1, 'rgba(76, 201, 240, 0.0)');
+        // Professional, clean palette for meteorological trends
+        const colorRain = '#3b82f6';      // Professional Blue
+        const colorTemp = '#e2725b';      // Soft Terracotta
+        const colorWind = '#64748b';      // Slate Grey
+        const colorSolar = '#b8860b';     // Dark Goldenrod (Muted Gold)
+
+        const gradRain = ctx.createLinearGradient(0, 0, 0, 350);
+        gradRain.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+        gradRain.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+        const gradTemp = ctx.createLinearGradient(0, 0, 0, 350);
+        gradTemp.addColorStop(0, 'rgba(226, 114, 91, 0.2)');
+        gradTemp.addColorStop(1, 'rgba(226, 114, 91, 0.0)');
 
         weatherChart = new Chart(ctx, {
             type: 'line',
@@ -175,35 +186,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Temperature (°C)',
-                        data: weather.temperature,
-                        borderColor: '#ef476f',
-                        backgroundColor: gradTemp,
-                        borderWidth: 3,
-                        tension: 0.6,
+                        label: 'Rainfall (mm)',
+                        data: weather.precipitation,
+                        borderColor: colorRain,
+                        backgroundColor: gradRain,
+                        borderWidth: 2.5,
+                        tension: 0.4,
                         fill: true,
-                        yAxisID: 'y'
+                        yAxisID: 'y3',
+                        hidden: false // Visible by default
                     },
                     {
-                        label: 'Solar Insolation (W/m²)',
-                        data: weather.solar,
-                        borderColor: '#ffd166',
-                        backgroundColor: gradSolar,
-                        borderWidth: 3,
-                        tension: 0.6,
+                        label: 'Temperature (°C)',
+                        data: weather.temperature,
+                        borderColor: colorTemp,
+                        backgroundColor: gradTemp,
+                        borderWidth: 2.5,
+                        tension: 0.4,
                         fill: true,
-                        yAxisID: 'y1'
+                        yAxisID: 'y',
+                        hidden: false // Visible by default
                     },
                     {
                         label: 'Wind Speed (m/s)',
                         data: weather.wind,
-                        borderColor: '#4cc9f0',
-                        backgroundColor: gradWind,
+                        borderColor: colorWind,
                         borderWidth: 2,
                         borderDash: [5, 5],
-                        tension: 0.6,
-                        fill: true,
-                        yAxisID: 'y2'
+                        tension: 0.4,
+                        fill: false,
+                        yAxisID: 'y2',
+                        hidden: true // Hidden by default
+                    },
+                    {
+                        label: 'Solar Insolation (W/m²)',
+                        data: weather.solar,
+                        borderColor: colorSolar,
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: false,
+                        yAxisID: 'y1',
+                        hidden: true // Hidden by default
                     }
                 ]
             },
@@ -212,34 +235,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 maintainAspectRatio: false,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
-                    legend: { labels: { font: { family: "'Outfit', sans-serif", size: 14 } } },
+                    legend: { labels: { font: { family: "'Outfit', sans-serif", size: 13 }, boxWidth: 12, padding: 20 } },
                     tooltip: {
-                        backgroundColor: 'rgba(10, 15, 25, 0.9)',
+                        backgroundColor: 'rgba(10, 15, 25, 0.95)',
                         padding: 14,
-                        titleFont: { size: 15, family: "'Outfit', sans-serif" },
-                        bodyFont: { size: 14, family: "'Inter', sans-serif" }
+                        titleFont: { size: 14, family: "'Outfit', sans-serif" },
+                        bodyFont: { size: 13, family: "'Inter', sans-serif" },
+                        borderColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1
                     }
                 },
                 scales: {
-                    x: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { font: { size: 11 } } },
                     y: {
                         type: 'linear', display: true, position: 'left',
-                        title: { display: true, text: 'Temp (°C)', color: '#ef476f' },
+                        title: { display: true, text: 'Temp (°C)', color: colorTemp, font: { weight: '600' } },
                         grid: { color: 'rgba(255,255,255,0.05)' },
-                        ticks: { color: '#ef476f' }
+                        ticks: { color: colorTemp }
                     },
                     y1: {
-                        type: 'linear', display: true, position: 'right',
-                        title: { display: true, text: 'Solar (W/m²)', color: '#ffd166' },
+                        type: 'linear', display: false, position: 'right', // Only show when toggled if possible, or keep simple
+                        title: { display: true, text: 'Solar (W/m²)', color: colorSolar },
                         grid: { drawOnChartArea: false },
-                        ticks: { color: '#ffd166' }
+                        ticks: { color: colorSolar }
                     },
                     y2: {
-                        type: 'linear', display: true, position: 'right', // Displaying the wind axis
-                        title: { display: true, text: 'Wind (m/s)', color: '#4cc9f0' },
+                        type: 'linear', display: false, position: 'right',
+                        title: { display: true, text: 'Wind (m/s)', color: colorWind },
                         grid: { drawOnChartArea: false },
-                        // Offset by layout to prevent overlap with y1 if possible
-                        ticks: { color: '#4cc9f0' }
+                        ticks: { color: colorWind }
+                    },
+                    y3: {
+                        type: 'linear', display: true, position: 'right',
+                        title: { display: true, text: 'Rain (mm)', color: colorRain, font: { weight: '600' } },
+                        grid: { drawOnChartArea: false },
+                        ticks: { color: colorRain }
                     }
                 }
             }

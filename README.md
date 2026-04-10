@@ -1,118 +1,96 @@
-# Renewable Energy Forecast for Sri Lanka
+---
+title: Sri Lanka Energy Forecast
+emoji: ⚡
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
 
-A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid using **LightGBM Quantile Regression** to provide weather-aware 80% confidence intervals.
+# Sri Lanka Renewable Energy Forecast
 
-## Background
+A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid with 80% conformal prediction intervals.
 
-Sri Lanka's electricity grid operator (CEB) needs to know how much renewable energy will be produced tomorrow. This is difficult because solar, wind, and hydro depend on weather. This project provides a data-driven solution.
+## Live Demo
 
-## What It Does
+🔗 [Sri Lanka Energy Forecast Dashboard](https://huggingface.co/spaces/deeps-pixel/sri-lanka-energy-forecast)
 
-| Input | Output |
-|-------|--------|
-| Weather forecast (temperature, solar radiation, wind, rain, humidity) | Estimated **Peak Power Projection** (MW) |
-| Time of day, day of week, month | Projected **Daily Energy Yield** (GWh) |
-| Statistical Uncertainty | Dynamic 80% Confidence Range (Q10 - Q90) |
-
-## How Accurate Is It?
-
-Tested on 2024 data (not seen during training):
+## Key Results
 
 | Metric | Value |
 |--------|-------|
-| Mean Absolute Error | 223 MW |
-| Root Mean Square Error | 280 MW |
-| Mean Absolute Percentage Error | 32% |
+| **Final MAE (bias corrected)** | **170.3 MW** |
+| Improvement over persistence baseline | 39.6% |
+| Improvement over raw model | 27.6% |
+| Conformal coverage | 82.6% (target 80%) |
+| Prediction interval width | ±411 MW |
 
-For a typical renewable output of 700 MW, the error is about 220 MW. This is the reality of weather-dependent forecasting.
+## Model Performance
 
-## Probabilistic Forecasting (Quantile Regression)
-
-Unlike standard regression which predicts a single value, this system uses **Quantile Regression** to account for weather-dependent uncertainty. The backend utilizes three distinct LightGBM models:
-
-- **Q10 Model**: Predicts the 10th percentile (Lower Bound).
-- **Q50 Model**: Predicts the 50th percentile (Median / Best Estimate).
-- **Q90 Model**: Predicts the 90th percentile (Upper Bound).
-
-This approach allows the confidence interval to expand or contract dynamically based on the specific weather conditions for each hour, rather than relying on a fixed historical offset.
-
-## Model Selection
-
-Five models were compared using time series cross-validation (no data leakage):
-
-| Model | CV MAE (MW) |
-|-------|--------------|
-| LightGBM | 248.8 |
+| Model | MAE (MW) |
+|-------|----------|
+| **LightGBM (Quantile)** | **248.8** |
 | XGBoost | 248.8 |
 | Random Forest | 253.8 |
 | Ridge | 260.8 |
-| Linear Regression | 260.8 |
+| Persistence (baseline) | 281.9 |
 
-LightGBM and XGBoost performed equally well. LightGBM was chosen for faster training.
+## Feature Importance (SHAP)
 
-## Why Tree-Based Models Win
+| Rank | Feature | Importance |
+|------|---------|------------|
+| 1 | month_sin | 120.1 |
+| 2 | hour_cos | 109.0 |
+| 3 | month_cos | 50.0 |
+| 4 | hour_sin | 49.0 |
+| 5 | wind_m_s | 18.6 |
+| 6 | dow_sin | 17.5 |
+| 7 | precip_mm | 15.7 |
+| 8 | humidity_pct | 15.0 |
+| 9 | solar_W_m2 | 8.5 |
+| 10 | temp_C | 8.4 |
 
-Renewable generation has non-linear relationships with weather:
-- Solar panel efficiency drops at very high temperatures
-- Wind power scales with cube of wind speed
-- Hydro depends on rainfall with time delays
+**Key insight:** Time features (hour, month) dominate. Solar radiation is #9, confirming Sri Lanka's grid is hydro-dominated, not solar-dominated.
 
-Linear models cannot capture these patterns. Tree-based models can.
+## Error Analysis & Bias Correction
 
-## What Matters Most (Feature Importance)
+### Seasonal Bias Detected
 
-| Feature | Importance |
-|---------|------------|
-| Temperature | Highest |
-| Rainfall | High |
-| Month (seasonal cycle) | High |
-| Wind speed | Medium |
-| Humidity | Medium |
-| Solar radiation | Lower than expected |
+| Season | Bias (MW) | Direction |
+|--------|-----------|-----------|
+| SW Monsoon (May-Sep) | +213.9 | Model under-predicted |
+| NE Monsoon (Dec-Feb) | +204.6 | Model under-predicted |
+| 1st Inter-Monsoon (Mar-Apr) | +152.8 | Model under-predicted |
+| 2nd Inter-Monsoon (Oct-Nov) | -204.5 | Model over-predicted |
 
-Temperature and rainfall being most important confirms that Sri Lanka's renewable generation is dominated by hydro (which depends on rain) and that temperature affects overall energy patterns.
+**Why:** Heavy rainfall and cloud cover during monsoons reduce solar generation, but the model overestimates renewable output from high wind and rain signals. Bias correction improved MAE by 27.6%.
 
-## Data Pipeline
+## Sensitivity Analysis
 
-- **Source**: 1,500+ Excel files from CEB (2021-2024)
-- **Resolution**: 15-minute intervals
-- **Weather data**: NASA POWER API
-- **Total rows**: 140,253
-- **Features**: 12 (5 weather + 7 time features with sin/cos encoding)
+| Parameter | Effect of ±20% change |
+|-----------|----------------------|
+| Temperature | Most sensitive (-20% → +263 MW) |
+| Humidity | Mildly sensitive |
+| Solar, Wind, Rain | Low sensitivity |
 
-## Interactive Dashboard
+## Methodology
 
-An interactive web interface is available for visualizing real-time forecasts and weather trends. It provides a visual representation of the best estimates and 80% confidence intervals.
+### Data Pipeline
+- **Source:** 1,500+ CEB generation reports (2021-2024)
+- **Weather:** NASA POWER API
+- **Resolution:** 15-minute intervals
+- **Final dataset:** 140,000+ rows
 
-- **Live Demo**: [Sri Lanka Energy Forecast Dashboard](https://huggingface.co/spaces/deeps-pixel/sri-lanka-energy-forecast)
+### Model
+- **Algorithm:** LightGBM with quantile regression objective
+- **Target:** Renewable = Solar + Wind + Major Hydro
+- **Features:** 12 (5 weather + 7 time features with sin/cos encoding)
+- **Training:** 2021-2023, Testing: 2024
 
-## Quick Start
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run CLI prediction
-python scripts/predict.py --temp 32 --solar 500 --wind 4 --rain 0 --humidity 65
-
-# Start Local Dashboard
-python -m uvicorn api.main:app --port 8000
-```
-
-**Example Output:**
-- **Estimated Peak Power Projection**: 1,350 MW
-- **Projected Daily Energy Yield**: 18.42 GWh
-- **80% Confidence Range (Peak Hour)**: 1,000 – 1,700 MW
-
-## Technical Architecture
-
-### Probabilistic Forecasting (Quantile Regression)
-Unlike standard regression which predicts a single value, this system uses **Quantile Regression** to account for weather-dependent uncertainty. The backend utilizes three distinct LightGBM models:
-- **Q10 Model**: Predicts the 10th percentile (Safe Minimum).
-- **Q50 Model**: Predicts the 50th percentile (Best Estimate).
-- **Q90 Model**: Predicts the 90th percentile (Maximum Potential).
-
-This allows the confidence interval to expand or contract dynamically based on specific weather conditions (e.g., higher uncertainty during monsoon periods).
+### Uncertainty Quantification
+- **Method:** Conformal prediction
+- **Coverage:** 82.6% on held-out test data
+- **Interval width:** ±411 MW
 
 ## Project Structure
 
@@ -138,14 +116,29 @@ sri-lanka-renewable-forecast/
 └── README.md                # Documentation & Meta
 ```
 
-## Requirements
+## Disclaimer
 
-The project relies on the following key dependencies (see `requirements.txt`):
-```text
-pandas>=2.0.0
-numpy>=1.24.0
-lightgbm>=4.0.0
-scikit-learn>=1.3.0
-matplotlib>=3.7.0
-xgboost>=1.7.0
+This dashboard forecasts renewable energy generation (solar + wind + major hydro) using weather data from the Colombo region. Actual generation across Sri Lanka may vary due to localized weather patterns. This tool is for academic and portfolio demonstration purposes only and is not intended for operational decision-making.
+
+## Quick Start
+
+### 1. Installation
+```bash
+# Clone repository
+git clone https://github.com/deeps-pixel/Sri-Lanka-Renewable-Energy-Forecast.git
+cd Sri-Lanka-Renewable-Energy-Forecast
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Run CLI Prediction
+```bash
+python scripts/predict.py --temp 32 --solar 500 --wind 4 --rain 0 --humidity 65
+```
+# Bias correction is automatically applied (improves MAE by 27.6%)
+
+### 3. Launch Dashboard
+```bash
+python -m uvicorn api.main:app --port 8000
 ```
