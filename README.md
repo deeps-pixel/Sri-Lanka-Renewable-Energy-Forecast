@@ -1,3 +1,13 @@
+---
+title: Sri Lanka Renewable Energy Forecast
+emoji: ⚡
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+python_version: 3.12
+pinned: false
+---
+
 # Sri Lanka Renewable Energy Forecast
 
 A probabilistic machine learning system that forecasts renewable energy generation (solar + wind + major hydro) for Sri Lanka's national grid with 80% conformal prediction intervals.
